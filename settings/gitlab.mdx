@@ -1,0 +1,37 @@
+---
+title: "GitLab"
+description: "Sync your docs with a GitLab repo"
+icon: 'gitlab'
+---
+
+<Check>
+  GitLab integration is available on the [Enterprise plan](https://mintlify.com/pricing).
+</Check>
+
+<Steps>
+  <Step title="Find your project ID">
+    Navigate to your project's `Settings` > `General` and find the Project ID.
+    <Frame>
+      <img src="/images/gitlab/gitlab-project-id.png" />
+    </Frame>
+  </Step>
+  <Step title="Generate a project private token">
+
+    a. Navigate to your project's `Settings` > `Access Tokens`.
+
+    b. Select `Add new token`.
+      1. Name the token "Mintlify" - this specific name is important as it will be visible when we make changes on our end.
+      2. Choose `read_api` for the scopes.
+      3. If you have a private repo, you must set the role as `Reporter`.
+
+    c. Finally click `Create project access token` and copy the token.
+
+    <Frame>
+      <img src="/images/gitlab/gitlab-project-access-token.png" />
+    </Frame>
+
+  </Step>
+  <Step title="Reach out to the Mintlify team for final setup.">
+    Contact us [here](https://mintlify.com/enterprise).
+  </Step>
+</Steps>
