@@ -119,7 +119,10 @@
         {
           "icon": "code",
           "group": "Custom Scripts",
-          "pages": ["advanced/custom/css", "advanced/custom/js"]
+          "pages": [
+            "advanced/custom/css",
+            "advanced/custom/js"
+          ]
         },
         {
           "icon": "folder",
@@ -133,7 +136,9 @@
         {
           "icon": "plug",
           "group": "Extensions",
-          "pages": ["advanced/widget/chat"]
+          "pages": [
+            "advanced/widget/chat"
+          ]
         },
         {
           "icon": "brackets-curly",
@@ -183,7 +188,10 @@
     },
     {
       "group": "SDKs",
-      "pages": ["integrations/sdks/speakeasy", "integrations/sdks/stainless"]
+      "pages": [
+        "integrations/sdks/speakeasy",
+        "integrations/sdks/stainless"
+      ]
     },
     {
       "group": "Support",
@@ -195,7 +203,10 @@
     },
     {
       "group": "Privacy",
-      "pages": ["integrations/privacy/overview", "integrations/privacy/osano"]
+      "pages": [
+        "integrations/privacy/overview",
+        "integrations/privacy/osano"
+      ]
     },
     {
       "group": "Components",
@@ -227,7 +238,9 @@
     },
     {
       "group": "Changelog",
-      "pages": ["changelog/overview"]
+      "pages": [
+        "changelog/overview"
+      ]
     }
   ],
   "footer": {
