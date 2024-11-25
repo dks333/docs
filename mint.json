@@ -61,6 +61,7 @@
       "pages": [
         "quickstart",
         "development",
+        "web-editor",
         "settings/global",
         "settings/navigation"
       ]
