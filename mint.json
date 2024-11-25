@@ -9,7 +9,7 @@
   "layout": "sidenav",
   "favicon": "/favicon.svg",
   "sidebar": {
-    "items": "container"
+    "items": "border"
   },
   "colors": {
     "primary": "#0D9373",
@@ -60,10 +60,17 @@
       "group": "Getting Started",
       "pages": [
         "quickstart",
-        "development",
-        "web-editor",
+        {
+          "group": "Editing",
+          "icon": "pen-paintbrush",
+          "pages": [
+            "development",
+            "web-editor"
+          ]
+        },
         "settings/global",
-        "settings/navigation"
+        "settings/navigation",
+        "migration"
       ]
     },
     {
@@ -110,17 +117,18 @@
         "settings/versioning",
         "settings/add-members",
         "settings/github",
-        "settings/gitlab",
-        "settings/authentication"
+        "settings/gitlab"
       ]
     },
     {
       "group": "Advanced",
-      "pages": [
-        {
+      "pages": [{
           "icon": "code",
           "group": "Custom Scripts",
-          "pages": ["advanced/custom/css", "advanced/custom/js"]
+          "pages": [
+            "advanced/custom/css",
+            "advanced/custom/js"
+          ]
         },
         {
           "icon": "folder",
@@ -134,7 +142,9 @@
         {
           "icon": "plug",
           "group": "Extensions",
-          "pages": ["advanced/widget/chat"]
+          "pages": [
+            "advanced/widget/chat"
+          ]
         },
         {
           "icon": "brackets-curly",
@@ -155,12 +165,14 @@
               "pages": [
                 "advanced/user-auth/choosing-an-auth-method",
                 "advanced/user-auth/shared-session",
-                "advanced/user-auth/jwt"
+                "advanced/user-auth/jwt",
+                "advanced/user-auth/oauth"
               ]
             },
             "advanced/user-auth/sending-data"
           ]
-        }
+        },
+        "settings/authentication"
       ]
     },
     {

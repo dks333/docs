@@ -4,31 +4,33 @@ description: "Highlight main points or links with customizable icons"
 icon: "rectangle"
 ---
 
-<Card title="Card Title" icon={<svg   className="w-3.5 overflow-visible"   xmlns="http://www.w3.org/2000/svg"   viewBox="0 0 384 512" >   <path d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z" /> </svg>} href="/content/components/card-groups">
+<Card title="Card Title" icon="link" href="/content/components/card-groups">
   This is how you use a card with an icon and a link. Clicking on this card
   brings you to the Card Group page.
 </Card>
 
 <RequestExample>
-  ```jsx Card Example
-  <Card title="Click on me" icon="link" href="/content/components/card-group">
-    This is how you use a card with an icon and a link. Clicking on this card
-    brings you to the Card Group page.
-  </Card>
-  ```
 
-  ```jsx Image Card Example
-  <Card title="Image Card" img="/images/card-with-image.png">
-    Here is an example of a card with an image
-  </Card>
-  ```
+```jsx Card Example
+<Card title="Click on me" icon="link" href="/content/components/card-group">
+  This is how you use a card with an icon and a link. Clicking on this card
+  brings you to the Card Group page.
+</Card>
+```
+
+```jsx Image Card Example
+<Card title="Image Card" img="/images/card-with-image.png">
+  Here is an example of a card with an image
+</Card>
+```
+
 </RequestExample>
 
 ### Horizontal Card
 
 Add a `horizontal` property to a card to make it horizontally displayed.
 
-<Card title="Plant Store Endpoints" icon="rocket" horizontal={true} href="https://github.com/mintlify/docs/pull/361">
+<Card title="Horizontal Card" icon="text-size" horizontal>
   Here is an example of a horizontal card
 </Card>
 
@@ -36,7 +38,7 @@ Add a `horizontal` property to a card to make it horizontally displayed.
 
 Add an `img` property to a card to display an image on the top of the card.
 
-<Card title="Image Card" img="/images/card-with-image.png">
+<Card title="Image Card" img="https://mintlify-assets.b-cdn.net/yosemite.jpg">
   Here is an example of a card with an image
 </Card>
 

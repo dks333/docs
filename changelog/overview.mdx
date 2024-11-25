@@ -4,6 +4,27 @@ description: "New updates and improvements"
 mode: "wide"
 ---
 
+<Update label="November 2024">
+## Web Editor
+<Frame>
+  <img src="/images/changelog/webeditor.jpg" alt="Web Editor" />
+</Frame>
+We've revamped our web editor so that you can now update docs with a fully WYSIWYG experience, while syncing with markdown.
+
+Check out our [docs on getting started with Web Editor](/web-editor).
+
+## /llms.txt support
+<Frame>
+  <img src="/images/changelog/llms.jpg" alt="llms.txt support" />
+</Frame>
+All docs instances are now automatically hosted at /llms.txt and /llms-full.txt so that LLMs can easily ingest your documentation. For more information, read the [docs on the new llms.txt standard.](https://llmstxt.org)
+
+
+## Localization
+You can now localize your docs which operates similarly to versioning. Add a `locale` to a version and fixed content in Mintlify like "Was this page helpful?" will also match the locale. 
+
+</Update>
+
 <Update label="October 2024">
 
 ## Changelogs
@@ -67,12 +88,16 @@ You can now customize the prompts for the AI chat. Please reach out to [support]
 
 ## Dashboard Improvements
 
+- Added ability to change custom domain to be /docs directly through dashboard settings.
 - Consolidated the login and signup pages to decrease friction and confusion.
 - Implemented the discovery login flow so that users that are members of multiple organizations can now switch between them.
 - Added login with Google OAuth
+- Added ability to add new deployment through dashboard settings.
 
 ## Bug Fixes
 
+- Can now use leading slashes in navigation.
+- Can now edit CSS & JS files in the web editor. 
 - Fixed `suggestEdit` not showing up even when enabled.
 - Fixed keyboard navigation for Search and Chat such that you can now use the up and down arrow keys to navigate the results.
 - Don't allow search engines to crawl user-auth protected pages.
