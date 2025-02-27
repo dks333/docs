@@ -6,16 +6,25 @@ description: "Description of your new file."
 This is a testing file asdasd asd
 
 
-<Tabs>
-  <Tab title="First Tab">
-    ☝️ Welcome to the content that you can only see inside the first Tab.
-  </Tab>
+<AccordionGroup>
+  <Accordion title="FAQ without Icon">
+    You can put other components inside Accordions.
 
-  <Tab title="Second Tab">
-    ✌️ Here's content that's only inside the second Tab.
-  </Tab>
+    ```java HelloWorld.java
+    class HelloWorld {
+        public static void main(String[] args) {
+            System.out.println("Hello, World!");
+        }
+    }
+    ```
 
-  <Tab title="Third Tab">
-    💪 Here's content that's only inside the third Tab.
-  </Tab>
-</Tabs>
+  </Accordion>
+
+  <Accordion title="FAQ with Icon" icon="alien-8bit">
+    Check out the [Accordion](/content/components/accordions) docs for all the supported props.
+  </Accordion>
+  
+  <Accordion title="FAQ without Icon">
+    Check out the [Accordion](/content/components/accordions) docs for all the supported props.
+  </Accordion>
+</AccordionGroup>
