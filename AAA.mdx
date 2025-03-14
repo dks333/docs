@@ -5,14 +5,14 @@ description: "Description of your new file."
 
 This is a testing [file](/code)
 
-| Name          | Type        | Description                                                  |
-| ------------- | ----------- | ------------------------------------------------------------ |
-| sessionId     | String      | The session ID (provided by your backend).                   |
-| clientId      | String      | Your organization’s client ID.                               |
-| environment   | Environment | The desired environment (development or production).         |
-| product       | Product     |                                                              |
-| merchantIds   | int\[\]     |                                                              |
-| useCategories | Bools       |                                                              |
-| useSearch     | Bool        |                                                              |
-| domainUrls    | String\[\]  |                                                              |
-| entryPoint    | String      |                                                              |
+| Name          | Type        | Description                                                                                                                                   |
+| :------------ | :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| sessionId     | String      | The session ID (provided by your backend).                                                                                                    |
+| clientId      | String      | Your organization’s client ID.                                                                                                                |
+| environment   | Environment | The desired environment (development or production).                                                                                          |
+| product       | Product     | The Knot product the session will inherit - the same as the `type` of session created. E.g. `card_switcher` or `transaction_link.`            |
+| merchantIds   | int\[]      | **Optional.** A list of merchant ID(s) to display. It is recommended to provide 0 or 1 merchant ID depending on your desired user experience. |
+| useCategories | Bool        | **Optional.** Whether to display merchant categories and therefore group merchants into categories for discoverability. Default: `true`.      |
+| useSearch     | Bool        | **Optional.** Whether to display the search bar, enabling users to search for merchants. Default: `true`.                                     |
+| domainUrls    | String\[]   | **Optional**. A set of domains for which Knot should explicitly not clear cookies.                                                            |
+| entryPoint    | String      | **Optional.** The specific entry point from within your app where you are initializing the Knot SDK (e.g. `onboarding`).                      |
