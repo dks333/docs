@@ -7,7 +7,10 @@
     "light": "#55D799",
     "dark": "#0D9373"
   },
-  "favicon": "/favicon.svg",
+  "favicon": {
+    "light": "/favicon.svg",
+    "dark": "/favicon-dark.svg"
+  },
   "navigation": {
     "tabs": [
       {
@@ -20,10 +23,7 @@
               {
                 "group": "Editing",
                 "icon": "pen-paintbrush",
-                "pages": [
-                  "development",
-                  "web-editor"
-                ]
+                "pages": ["development", "web-editor"]
               },
               "settings/global",
               "settings/navigation",
@@ -83,10 +83,7 @@
               {
                 "group": "Custom Scripts",
                 "icon": "code",
-                "pages": [
-                  "advanced/custom/css",
-                  "advanced/custom/js"
-                ]
+                "pages": ["advanced/custom/css", "advanced/custom/js"]
               },
               {
                 "group": "Custom Subpaths",
@@ -100,9 +97,7 @@
               {
                 "group": "Extensions",
                 "icon": "plug",
-                "pages": [
-                  "advanced/widget/chat"
-                ]
+                "pages": ["advanced/widget/chat"]
               },
               {
                 "group": "REST API",
@@ -219,9 +214,7 @@
         "groups": [
           {
             "group": "Changelog",
-            "pages": [
-              "changelog/overview"
-            ]
+            "pages": ["changelog/overview"]
           }
         ]
       }
