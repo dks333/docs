@@ -3,9 +3,9 @@
   "theme": "maple",
   "name": "Mintlify",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#55D799",
-    "dark": "#0D9373"
+    "primary": "#6d28d9",
+    "light": "#c4b5fd",
+    "dark": "#4338ca"
   },
   "favicon": {
     "light": "/favicon.svg",
@@ -236,7 +236,11 @@
     }
   },
   "background": {
-    "decoration": "windows"
+    "decoration": "windows",
+    "color": {
+      "light": "#fb923c",
+      "dark": "#dc2626"
+    }
   },
   "navbar": {
     "links": [
