@@ -237,10 +237,6 @@
   },
   "background": {
     "decoration": "windows",
-    "color": {
-      "light": "#fb923c",
-      "dark": "#dc2626"
-    }
   },
   "navbar": {
     "links": [
