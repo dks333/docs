@@ -236,7 +236,7 @@
     }
   },
   "background": {
-    "decoration": "windows",
+    "decoration": "windows"
   },
   "navbar": {
     "links": [
