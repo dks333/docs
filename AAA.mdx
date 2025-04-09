@@ -3,6 +3,120 @@ title: "Hello"
 description: "testing file"
 ---
 
-this is a [file]() asdads $\int_a^b x^2 dx$
+# Funding wallets with Apple Pay and Google Pay
 
-$$\exists \, x \notin [0,1]$$
+Privy makes it easy to allow your users to fund their embedded wallets with convenient payment methods like Apple Pay and Google Pay via `@privy-io/expo` and on the web through `@privy-io/react-auth`.
+
+This guide will walk you through setting up Privy's funding flows, allowing your users to fund their wallets quickly and easily in under two minutes.
+
+<Frame>
+  <img src="https://mintlify.s3.us-west-1.amazonaws.com/privy-c2af3412/images/card-based-funding.png" />
+</Frame>
+
+## 1. Enable debit card funding in the Dashboard
+
+In the [Privy
+Dashboard](https://dashboard.privy.io/apps?page=funding), enable **Pay with card** on the **User management > Account funding** page.
+
+With this option enabled, if Apple Pay or Google Pay is available on your user's device, Privy will provide users the option to purchase with those methods.
+
+Choose your desired network across EVM and Solana and set a recommended amount for users to fund. Users can update the amount manually if they choose.
+
+## 2. Prompt the user to fund
+
+### `@privy-io/react-auth`
+
+Prompt the user to fund by calling `fundWallet`
+
+<Tabs>
+  <Tab title="Fund with EVM">
+    | Parameter | Type                                                | Description                                                                                                                                                                                                                                                                               |
+    | --------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `chain`   | [`Chain`](https://viem.sh/docs/chains/introduction) | Optional. A [`viem/chains`](https://viem.sh/docs/chains/introduction) object for the network on which users should fund their accounts. Defaults to the network you configured in the Privy Dashboard.                                                                                    |
+    | `asset`   | `'native-currency' \| 'USDC' \| {erc20: string}`    | Optional. The asset you'd like the user to fund their accounts with. Set `'native-currency'` to fund with the `chain`'s native currency (e.g. ETH), `'USDC'` to fund with USDC, or a token address in the `erc20` field to fund with an arbitrary ERC20. Defaults to `'native-currency'`. |
+    | `amount`  | `string`                                            | Required if `asset` is set, optional otherwise. The amount of the asset to fund as a decimal string. Defaults to the amount you configured in the Privy Dashboard.                                                                                                                        |
+
+    ```tsx
+    import {useFundWallet} from '@privy-io/react-auth';
+    // Replace this with your desired network
+    import {base} from 'viem/chains'
+    ...
+    // `fundWallet` from the useFundWallet() hook
+    fundWallet('your-wallet-address-here', {
+      chain: base,
+      amount: '0.01' // Since no `asset` is set, defaults to 'native-currency' (ETH)
+    })
+    ```
+  </Tab>
+
+  <Tab title="Fund with SOL">
+    | Parameter | Type            | Description                                                                                                                                                        |
+    | --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | `cluster` | `SolanaCluster` | Optional. An object for the cluster on which users should fund their accounts. Defaults to `mainnet-beta`.                                                         |
+    | `amount`  | `string`        | Required if `asset` is set, optional otherwise. The amount of the asset to fund as a decimal string. Defaults to the amount you configured in the Privy Dashboard. |
+
+    As an example, you can configure the cluster and amount to fund like so:
+
+    ```tsx
+    import {useFundWallet} from '@privy-io/react-auth/solana';
+    ...
+    // `fundWallet` from the useFundWallet() hook
+    const {fundWallet} = useFundWallet();
+    fundWallet('your-wallet-address-here', {
+      cluster: {name: 'devnet'},
+      amount: '0.01', // SOL
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### `@privy-io/expo`
+
+<Tabs>
+  <Tab title="Fund with EVM">
+    | Parameter | Type                                                | Description                                                                                                                                                                                                                                                                               |
+    | --------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `address` | `string`                                            | The destination address to fund.                                                                                                                                                                                                                                                          |
+    | `chain`   | [`Chain`](https://viem.sh/docs/chains/introduction) | Optional. A [`viem/chains`](https://viem.sh/docs/chains/introduction) object for the network on which users should fund their accounts. Defaults to the network you configured in the Privy Dashboard.                                                                                    |
+    | `asset`   | `'native-currency' \| 'USDC' \| {erc20: string}`    | Optional. The asset you'd like the user to fund their accounts with. Set `'native-currency'` to fund with the `chain`'s native currency (e.g. ETH), `'USDC'` to fund with USDC, or a token address in the `erc20` field to fund with an arbitrary ERC20. Defaults to `'native-currency'`. |
+    | `amount`  | `string`                                            | Required if `asset` is set, optional otherwise. The amount of the asset to fund as a decimal string. Defaults to the amount you configured in the Privy Dashboard.                                                                                                                        |
+
+    ```tsx
+    import {useFundWallet} from '@privy-io/expo/ui';
+    // Replace this with your desired network
+    import {base} from 'viem/chains'
+    ...
+    // `fundWallet` from the useFundWallet() hook
+    fundWallet({
+      address: '0x2F3eb40872143b77D54a6f6e7Cc120464C764c09',
+      asset: "USDC",
+      chain: base,
+      amount: '1'
+    })
+    ```
+  </Tab>
+
+  <Tab title="Fund with SOL">
+    | Parameter | Type            | Description                                                                                                                                                        |
+    | --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | `cluster` | `SolanaCluster` | Optional. An object for the cluster on which users should fund their accounts. Defaults to `mainnet-beta`.                                                         |
+    | `amount`  | `string`        | Required if `asset` is set, optional otherwise. The amount of the asset to fund as a decimal string. Defaults to the amount you configured in the Privy Dashboard. |
+
+    As an example, you can configure the cluster and amount to fund like so:
+
+    ```tsx
+    import {useFundSolanaWallet} from '@privy-io/expo/ui';
+    ...
+    // `fundWallet` from the useFundSolanaWallet() hook
+    const {fundWallet} = useFundSolanaWallet();
+    fundWallet({
+      address: 'address'
+      amount: '0.01', // SOL
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## All set!
+
+Users can now fund their wallets with Apple Pay and Google Pay natively within the application.
