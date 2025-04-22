@@ -3,26 +3,34 @@ title: "Hello"
 description: "testing file"
 ---
 
-This is a [testing](https://google.com) file 
+This is a [testing](https://google.com) file
 
-<img src="/images/editor/publish-button-light.png"/>
+<Accordion title="New Accordion" icon="sparkles">
+  this should be a link
+</Accordion>
 
+<Info>
+  this can also be a line
+</Info>
 
-<Card title="Card">
-  Hello world
+<Card title="New Card" icon="sparkles">
+  I think this work alread
 </Card>
 
-* hello list
+<CardGroup cols={2}>
+  <Card title="New Card" icon="sparkles">
+    asdasdsad  asd asdasd
+  </Card>
+  <Card title="New Card" icon="sparkles">
+    asd asdasd asd asd
+  </Card>
+</CardGroup>
 
-## Git and update workflows
-
-### Git basics
-
-While Web Editor means you don’t need to go to GitHub or your command line to make
-changes, it’s still helpful to know the basics of git.
-
-Git terminology:
-
-- **Repository**: The folder in which your code lives. It can be local (on your computer) or remote (like GitHub).
-
-- **Commit**: A snapshot of changes made to files in the repository.
+<Steps>
+  <Step title="New Step">
+    this should be a link
+  </Step>
+  <Step title="New Step">
+    this also should be a link
+  </Step>
+</Steps>
