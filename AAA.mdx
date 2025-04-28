@@ -5,3 +5,31 @@ description: "testing file"
 
 This is a [testing](https://google.com) file
 
+## Reference
+
+`Imprint.create()` \~ Configuration Object Fields:
+
+| PROPERTY NAME           | REQUIRED | TYPE   | DESCRIPTION                                                                                                                                 |
+| ----------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`client_secret`**     | TRUE     | String | Generated through [Create Customer Session](https://docs.imprint.co/api-reference/customer-sessions/create-a-new-customer-session) endpoint |
+| **`partner_reference`** | TRUE     | String | Unique identifier for the program provided by the Imprint team                                                                              |
+| **`selector`**          | FALSE    | String | DOM element to load the application. If not provided, Imprint will try to find a container with `id="imprint-ui"` (`#imprint-ui` selector)  |
+| **`onCompletion`**      | FALSE    | String | Callback function that accepts a `result` and `data` parameters (see all possible values below)                                             |
+
+`onCompletion` \~ Callback `result` values:
+
+| ENUM                 | DESCRIPTION                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| **`OFFER_ACCEPTED`** | Application has been approved and credit offer accepted. New cardholder! |
+| **`REJECTED`**       | Application has been rejected by Imprint                                 |
+| **`IN_PROGRESS`**    | Application has been exited, not completed                               |
+| **`ERROR`**          | Invalid request parameters (e.g., invalid token)                         |
+
+`onCompletion` \~ Callback `data` object fields:
+
+| PROPERTY NAME             | TYPE           | DESCRIPTION         |
+| ------------------------- | -------------- | ------------------- |
+| **`customer_id`**         | string \| null | Imprint Customer ID |
+| **`payment_method_id`**   | string \| null | Payment Method ID   |
+| **`partner_customer_id`** | string \| null | Partner Customer ID |
+| **`error_code`**          | string \| null | Error Code          |
