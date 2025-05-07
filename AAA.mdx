@@ -5,20 +5,4 @@ description: "testing file"
 
 This is a [testing](https://google.com) file
 
-## Setting up your own game
 
-Now, let's say you want to set up a player-character conversation in your own game.
-
-Let's start with the player.
-
-1. Create an Actor that represents the player.
-2. In the Components window, click Add \> BP Inworld Player Component to attach the Inworld Player Component to your Actor.
-   ![](/images/edit-online.png)
-3. In the Details window, you can now customize all the fields available in the component. For the player, the primary fields that you may wish to modify are:
-   - **Name**: The name of the player (that the Character will know the player as)
-   - **Start Mic Enabled**: Whether to start with the mic enabled. You may want to keep it disabled and then enable it only upon some player action (e.g., clicking on the muted mic icon to unmute)
-4. You will then need to determine which character to send the player events to (`Send Audio Message`, `Send Text Message`, and `Interrupt`). You can copy the Event Graph from BP_Conversation_Player in our example Conversation Template as a starting point. The BP_Conversation_Player has a function `Get Target Character Component`, that does a `GetActorOfClass` to find the character (BP Inworld Character Component) to target. However, for your game, you could replace that function with your own, for example, instead of getting the closest character or using some other logic to identify which character to target.
-   ![](/images/edit-online.png)
-5. Open the Game Mode BP and add the newly created Player BP to the Player State Class. This will auto-populate the player character with the new Inworld BP on launch. In the provided template, the game mode is listed as `BP_Conversation_GameMode`, and the Player BP is `BP_Conversation_Player`.
-6. Place a Player Start actor in your level. You can do this by selecting Actor \> Place Actor \> Player Start from the top menu bar, and dragging the Player Start actor to the desired location in the level
-   ![](/images/edit-online.png)
