@@ -4,6 +4,52 @@ description: "Organize your docs directory to guide your users to the informatio
 icon: "map"
 ---
 
+export const name1 = 'Response';
+export const description1 = 'Our new response API, built for agents and tools';
+
+export const name2 = 'Chat Completion';
+export const description2 = 'Previous standard API for model interacgtions';
+
+<View name={name1} description={description1}>
+
+```js
+import OpenAI from 'openai';
+
+const client = new OpenAI();
+
+const response = await client.responses.create({
+  model: 'gpt-4.1',
+  input: 'Write a one-sentence bedtime story about a unicorn.',
+});
+
+console.log(response.output_text);
+```
+
+</View>
+
+<View name={name2} description={description2}>
+
+```js
+import OpenAI from 'openai';
+
+const client = new OpenAI();
+
+const completion = await client.chat.completions.create({
+  model: 'gpt-4.1',
+  messages: [
+    {
+      role: 'user',
+      content: 'Write a one-sentence bedtime story about a unicorn.',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+</View>
+
+
 ## Tabs
 
 Tabs help distinguish between different topics or sections of your
