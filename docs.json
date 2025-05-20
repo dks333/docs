@@ -12,6 +12,15 @@
     "dark": "/favicon-dark.svg"
   },
   "navigation": {
+    "global":{
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "icon": "/logo/dark.svg",
+          "href": "https://google.com"
+        }
+      ]
+    },
     "tabs": [
       {
         "tab": "Documentation",
