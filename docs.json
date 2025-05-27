@@ -27,6 +27,7 @@
         "groups": [
           {
             "group": "Getting Started",
+            "icon": "/logo/light.svg",
             "pages": [
               "quickstart",
               {
