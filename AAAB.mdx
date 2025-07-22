@@ -1,0 +1,120 @@
+---
+mode: "custom"
+title: "Mantle Docs"
+description: "Welcome to the home of your documentation"
+---
+
+<div className="relative w-full flex items-center justify-center" style={{ height: '26rem', overflow: 'hidden'}}>
+
+<div id="background-div" className="absolute inset-0 h-full bg-[#00000000] bg-cover bg-center"></div>
+
+<div style={{ position: 'absolute', textAlign: 'center', padding: '0 1rem' }}>
+  <div
+    className="text-5xl text-gray-900 dark:text-[#faf4ee] font-medium w-full mt-12 leading-[1.2] tracking-tight"
+  >
+    Welcome to the Mantle Help Center!
+  </div>
+
+  <p className="text-lg" style={{  fontWeight: '500' , maxWidth: '40rem', margin: '0 auto', marginTop: '0.5rem'}}>
+    Looking for something specific? Use the search icon
+  </p>
+
+    <div className="flex items-center justify-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <button
+        type="button"
+        className="hidden w-full lg:flex items-center text-sm leading-6 py-4 pl-4 pr-4 text-gray-500 rounded-full"
+        id="home-search-entry"
+        style={{
+          marginTop: '2rem',
+          maxWidth: '40rem',
+          background: '#FFF',
+          boxShadow: '0px 1px 4px 0px rgba(8, 9, 10, 0.25), 0px 0px 0px 4px rgba(255, 255, 255, 0.20)',
+          cursor: 'pointer',
+          textAlign: 'left',
+        }}
+        onClick={()=> document.getElementById('search-bar-entry').click()}
+      >
+        <svg
+          className="h-4 w-4 ml-1.5 flex-none bg-primary hover:bg-gray-600 dark:bg-primary-dark dark:hover:bg-white/70"
+          style={{
+          marginRight: '0.5rem',
+          maskImage:
+            'url("https://mintlify.b-cdn.net/v6.5.1/solid/magnifying-glass.svg")',
+          maskRepeat: 'no-repeat',
+          maskPosition: 'center center',
+          }}
+        />
+        Search or ask...
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  style={{marginTop: '2rem', marginBottom: '8rem', maxWidth: '70rem', marginLeft: 'auto',
+  marginRight: 'auto', paddingLeft: '1.25rem',
+  paddingRight: '1.25rem' }}
+>
+
+  <div className="flex flex-col w-full mb-2 " style={{ marginTop: '2rem'}}>
+  <h2
+    className="text-gray-900 dark:text-gray-200 font-medium text-2xl"
+  >
+    Popular Guides
+  </h2>
+</div>
+
+<Columns cols={3}>
+  <Card title="Getting Started for Admins" icon="star" horizontal href="/getting-started-for-admins" />
+
+  <Card title="Getting Started for Law Firms" icon="scale-balanced" horizontal href="https://withmantle.notion.site/Getting-Started-for-Law-Firms-1e626a3794258165b1a3dc67d309a830?pvs=25" />
+
+  <Card title="Getting Started for Law Firms" icon="users" horizontal href="https://withmantle.notion.site/Getting-Started-for-Law-Firms-1e626a3794258165b1a3dc67d309a830?pvs=25" />
+</Columns>
+
+
+<div className="flex flex-col w-full mb-2" style={{ marginTop: '2rem'}}>
+  <h2
+    className="text-gray-900 dark:text-gray-200 font-medium text-2xl"
+  >
+    What’s New?
+  </h2>
+</div>
+
+<Columns cols={2}>
+  <Card title="Mantle Product Updates" icon="arrow-up" horizontal href="https://withmantle.notion.site/Mantle-Product-Updates-ebdc43ffc105405993fa09b173f7ab44?pvs=25" />
+
+  <Card title="Mantle Portal Product Updates" icon="code-compare" horizontal href="https://withmantle.notion.site/Mantle-Portal-Product-Updates-8ca9e8a509be43afbf76fb5742325f32?pvs=25" />
+</Columns>
+
+<div className="flex flex-col w-full mb-2" style={{ marginTop: '2rem'}}>
+  <h2
+    className="text-gray-900 dark:text-gray-200 font-medium text-2xl"
+  >
+    Most-Loved
+  </h2>
+</div>
+
+<Columns cols={3}>
+  <Card title="In Platform Exercising" icon="money-bill" horizontal href="https://withmantle.notion.site/In-Platform-Exercising-1e626a37942581be98f0c0e7e257765d?pvs=25" />
+
+  <Card title="409A Valuations" icon="chart-area" horizontal href="https://withmantle.notion.site/409A-Valuations-1e626a379425813dbf41e899a346d47a?pvs=25" />
+
+  <Card title="Term Sheet Modeler" icon="calculator" horizontal href="https://withmantle.notion.site/Term-Sheet-Modeler-1e626a379425813c997bc82dc8b69d6c?pvs=25" />
+</Columns>
+
+  <div className="flex flex-col w-full mb-2" style={{ marginTop: '2rem'}}>
+  <h2
+    className="text-gray-900 dark:text-gray-200 font-medium text-2xl"
+  >
+    Feedback & Support
+  </h2>
+</div>
+
+<Columns cols={2}>
+  <Card title="Mantle Feedback Form" icon="comment-dots" horizontal href="https://tenkeylabs.notion.site/1c726a37942580e1990df9345fd9e89f?pvs=24" />
+
+  <Card title="Email our Support team" icon="envelope" horizontal href="mailto:https://tenkeylabs.notion.site/1c726a37942580e1990df9345fd9e89f?pvs=24" />
+</Columns>
+
+</div>
