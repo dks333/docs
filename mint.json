@@ -196,7 +196,10 @@
     },
     {
       "group": "SDKs",
-      "pages": ["integrations/sdks/speakeasy", "integrations/sdks/stainless"]
+      "pages": [
+        "integrations/sdks/speakeasy",
+        "integrations/sdks/stainless"
+      ]
     },
     {
       "group": "Support",
@@ -208,7 +211,10 @@
     },
     {
       "group": "Privacy",
-      "pages": ["integrations/privacy/overview", "integrations/privacy/osano"]
+      "pages": [
+        "integrations/privacy/overview",
+        "integrations/privacy/osano"
+      ]
     },
     {
       "group": "Components",
@@ -240,7 +246,9 @@
     },
     {
       "group": "Changelog",
-      "pages": ["changelog/overview"]
+      "pages": [
+        "changelog/overview"
+      ]
     }
   ],
   "footer": {
