@@ -12,7 +12,7 @@
     "dark": "/favicon-dark.svg"
   },
   "navigation": {
-    "global":{
+    "global": {
       "anchors": [
         {
           "anchor": "Documentation",
@@ -30,6 +30,7 @@
             "icon": "/logo/light.svg",
             "pages": [
               "quickstart",
+              "yoyo",
               {
                 "group": "Editing",
                 "icon": "pen-paintbrush",
