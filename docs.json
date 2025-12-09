@@ -12,7 +12,7 @@
     "dark": "/favicon-dark.svg"
   },
   "navigation": {
-    "global":{
+    "global": {
       "anchors": [
         {
           "anchor": "Documentation",
@@ -227,6 +227,14 @@
             "pages": ["changelog/overview"]
           }
         ]
+      },
+      {
+        "tab": "Portfolio",
+        "href": "https://samding.dev"
+      },
+      {
+        "tab": "API References",
+        "openapi": "v1-openapi.json"
       }
     ]
   },
