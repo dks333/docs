@@ -12,15 +12,6 @@
     "dark": "/favicon-dark.svg"
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "icon": "/logo/light.svg",
-          "href": "https://google.com"
-        }
-      ]
-    },
     "tabs": [
       {
         "tab": "Documentation",
@@ -236,7 +227,16 @@
         "tab": "API References",
         "openapi": "v1-openapi.json"
       }
-    ]
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "icon": "/logo/light.svg",
+          "href": "https://google.com"
+        }
+      ]
+    },
   },
   "styling": {
     "codeblocks": "system"
