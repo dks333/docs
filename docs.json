@@ -129,7 +129,16 @@
               "settings/authentication"
             ]
           }
-        ]
+        ],
+        "global": {
+          "anchors": [
+            {
+              "anchor": "Documentation",
+              "icon": "/logo/light.svg",
+              "href": "https://google.com"
+            }
+          ]
+        }
       },
       {
         "tab": "Components",
