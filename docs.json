@@ -21,6 +21,8 @@
             "icon": "/logo/light.svg",
             "pages": [
               "quickstart",
+              "external-url",
+              "https://www.mintlify.com/docs",
               {
                 "group": "Editing",
                 "icon": "pen-paintbrush",
