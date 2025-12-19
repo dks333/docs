@@ -1,0 +1,120 @@
+---
+title: "Console Logging Tests"
+description: "Basic console logging and debugging tests for iframe security"
+icon: "terminal"
+---
+
+# Console Logging Tests
+
+This test demonstrates basic console logging functionality and provides a foundation for debugging iframe security issues.
+
+<script>
+  {`
+console.log('📋 CONSOLE LOGGING TEST STARTED');
+console.log('Testing iframe console access and logging capabilities');
+
+// Test 1: Basic console methods
+console.log('--- TEST 1: Console Method Availability ---');
+console.log('✅ console.log available');
+console.warn('⚠️ console.warn available');
+console.error('❌ console.error available');
+console.info('ℹ️ console.info available');
+
+if (console.debug) {
+  console.debug('🐛 console.debug available');
+}
+
+if (console.trace) {
+  console.trace('📍 console.trace available');
+}
+
+// Test 2: Context information
+console.log('--- TEST 2: Context Information ---');
+console.log('Current URL:', window.location.href);
+console.log('User Agent:', navigator.userAgent);
+console.log('Timestamp:', new Date().toISOString());
+console.log('In iframe:', window !== window.top);
+
+// Test 3: Console grouping
+console.log('--- TEST 3: Console Grouping ---');
+console.group('🔍 Iframe Security Context');
+console.log('Parent accessible:', window.parent !== window);
+console.log('Top window accessible:', window.top !== window.self);
+console.groupEnd();
+
+// Test 4: Performance timing
+console.log('--- TEST 4: Performance Metrics ---');
+if (window.performance) {
+  console.log('Page load start:', performance.timing.navigationStart);
+  console.log('DOM ready:', performance.timing.domContentLoadedEventEnd);
+  console.log('Load complete:', performance.timing.loadEventEnd);
+}
+
+// Test 5: Console table (if available)
+console.log('--- TEST 5: Console Table ---');
+if (console.table) {
+  console.table({
+    'Test Status': 'Running',
+    'Context': 'Iframe',
+    'Security Level': 'Testing',
+    'Timestamp': Date.now()
+  });
+}
+
+// Test 6: Persistent logging
+console.log('--- TEST 6: Persistent Logging Setup ---');
+let logCount = 0;
+const logInterval = setInterval(() => {
+  logCount++;
+  console.log(\`📋 Persistent log entry #\${logCount} - \${new Date().toLocaleTimeString()}\`);
+  
+  if (logCount >= 3) {
+    clearInterval(logInterval);
+    console.log('✅ Persistent logging completed');
+  }
+}, 1000);
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '📋 CONSOLE LOGGING ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #6b7280; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('📋 CONSOLE LOGGING TEST COMPLETED');
+}, 5000);
+`}
+</script>
+
+## What This Test Does
+
+This console logging test provides:
+
+1. **Basic Console Methods** - Tests availability of log, warn, error, info, debug, trace
+2. **Context Information** - Displays current iframe context and environment details
+3. **Console Grouping** - Demonstrates organized logging with groups
+4. **Performance Metrics** - Shows timing information for debugging
+5. **Console Table** - Displays structured data in table format
+6. **Persistent Logging** - Sets up ongoing log entries for monitoring
+
+## Purpose
+
+This foundational test helps with:
+
+- **Debugging other security tests** by ensuring console access works
+- **Monitoring iframe behavior** through structured logging
+- **Performance analysis** of iframe loading and execution
+- **Context verification** to confirm iframe environment
+
+## Expected Output
+
+You should see in the browser console:
+
+- Organized log entries with icons and structure
+- Context information about the iframe environment
+- Performance timing data
+- Periodic log entries over time
+- Confirmation that logging works properly
+
+This test serves as a baseline to ensure that more complex security tests can properly log their results and findings.

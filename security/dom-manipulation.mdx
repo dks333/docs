@@ -1,0 +1,211 @@
+---
+title: "DOM Manipulation Tests"
+description: "Tests for manipulating parent document elements"
+icon: "code"
+---
+
+# DOM Manipulation Tests
+
+This test evaluates attempts to manipulate the parent document's DOM, which should be prevented by cross-origin security policies.
+
+<script>
+  {`
+console.log('🎨 DOM MANIPULATION TEST STARTED');
+
+// Test 1: Parent body modification
+console.log('--- TEST 1: Parent Body Modification ---');
+try {
+  if (window.parent && window.parent.document && window.parent.document.body) {
+    const originalBg = window.parent.document.body.style.backgroundColor;
+    window.parent.document.body.style.backgroundColor = 'red';
+    console.log('✅ Parent body background changed!');
+    
+    setTimeout(() => {
+      window.parent.document.body.style.backgroundColor = originalBg;
+      console.log('🔄 Parent body background restored');
+    }, 2000);
+  }
+} catch (e) {
+  console.log('❌ Parent body modification blocked:', e.message);
+}
+
+// Test 2: Parent element injection
+console.log('--- TEST 2: Parent Element Injection ---');
+try {
+  const maliciousDiv = window.parent.document.createElement('div');
+  maliciousDiv.innerHTML = '🚨 INJECTED BY IFRAME 🚨';
+  maliciousDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: yellow; padding: 20px; z-index: 999999; border: 3px solid red; font-size: 24px; font-weight: bold;';
+  window.parent.document.body.appendChild(maliciousDiv);
+  console.log('✅ Malicious element injected into parent!');
+  
+  setTimeout(() => {
+    maliciousDiv.remove();
+    console.log('🧹 Cleaned up injected element');
+  }, 3000);
+} catch (e) {
+  console.log('❌ Parent element injection blocked:', e.message);
+}
+
+// Test 3: Parent script injection
+console.log('--- TEST 3: Parent Script Injection ---');
+try {
+  const script = window.parent.document.createElement('script');
+  script.textContent = 'alert("Script injected from iframe!"); console.log("🚨 IFRAME SCRIPT EXECUTION SUCCESS!");';
+  window.parent.document.head.appendChild(script);
+  console.log('✅ Script injected into parent!');
+} catch (e) {
+  console.log('❌ Parent script injection blocked:', e.message);
+}
+
+// Test 4: Parent CSS injection
+console.log('--- TEST 4: Parent CSS Injection ---');
+try {
+  const style = window.parent.document.createElement('style');
+  style.textContent = 'body { transform: rotate(180deg) !important; transition: transform 2s !important; }';
+  window.parent.document.head.appendChild(style);
+  console.log('✅ CSS injected into parent!');
+  
+  setTimeout(() => {
+    style.remove();
+    console.log('🔄 Malicious CSS removed');
+  }, 4000);
+} catch (e) {
+  console.log('❌ Parent CSS injection blocked:', e.message);
+}
+
+// Test 5: Parent form manipulation
+console.log('--- TEST 5: Parent Form Manipulation ---');
+try {
+  const forms = window.parent.document.querySelectorAll('form');
+  console.log(\`Found \${forms.length} forms in parent document\`);
+  
+  forms.forEach((form, index) => {
+    const hiddenInput = window.parent.document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'hijacked_field';
+    hiddenInput.value = 'injected_by_iframe';
+    form.appendChild(hiddenInput);
+    console.log(\`✅ Injected hidden field into form \${index + 1}\`);
+  });
+} catch (e) {
+  console.log('❌ Parent form manipulation blocked:', e.message);
+}
+
+// Test 6: Parent cookie manipulation via document
+console.log('--- TEST 6: Parent Cookie Manipulation ---');
+try {
+  console.log('Parent cookies before:', window.parent.document.cookie);
+  window.parent.document.cookie = 'iframe_hijack=true; path=/';
+  console.log('Parent cookies after:', window.parent.document.cookie);
+  console.log('✅ Parent cookie manipulation successful!');
+} catch (e) {
+  console.log('❌ Parent cookie manipulation blocked:', e.message);
+}
+
+// Test 7: Parent localStorage manipulation
+console.log('--- TEST 7: Parent LocalStorage Manipulation ---');
+try {
+  window.parent.localStorage.setItem('iframe_hijack_test', JSON.stringify({
+    timestamp: Date.now(),
+    message: 'Injected from iframe'
+  }));
+  console.log('✅ Parent localStorage manipulation successful!');
+  console.log('Stored data:', window.parent.localStorage.getItem('iframe_hijack_test'));
+} catch (e) {
+  console.log('❌ Parent localStorage manipulation blocked:', e.message);
+}
+
+// Test 8: Parent event handler override
+console.log('--- TEST 8: Parent Event Handler Override ---');
+try {
+  const originalOnclick = window.parent.document.body.onclick;
+  window.parent.document.body.onclick = function(e) {
+    console.log('🚨 PARENT CLICK HIJACKED!', e);
+    alert('Click hijacked by iframe!');
+    return false;
+  };
+  console.log('✅ Parent click handler overridden!');
+  
+  setTimeout(() => {
+    window.parent.document.body.onclick = originalOnclick;
+    console.log('🔄 Parent click handler restored');
+  }, 5000);
+} catch (e) {
+  console.log('❌ Parent event handler override blocked:', e.message);
+}
+
+// Test 9: Parent URL manipulation
+console.log('--- TEST 9: Parent URL Manipulation ---');
+try {
+  const originalTitle = window.parent.document.title;
+  window.parent.document.title = '🚨 HIJACKED BY IFRAME 🚨';
+  console.log('✅ Parent title changed!');
+  
+  setTimeout(() => {
+    window.parent.document.title = originalTitle;
+    console.log('🔄 Parent title restored');
+  }, 3000);
+} catch (e) {
+  console.log('❌ Parent title manipulation blocked:', e.message);
+}
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '🎨 DOM MANIPULATION TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #8b5cf6; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('🎨 DOM MANIPULATION TEST COMPLETED');
+}, 5000);
+`}
+</script>
+
+## What This Test Does
+
+This DOM manipulation test attempts to:
+
+1. **Modify Parent Body** - Change parent document background color
+2. **Inject Elements** - Add visible elements to parent document
+3. **Inject Scripts** - Execute JavaScript in parent context
+4. **Inject CSS** - Add malicious styles to parent document
+5. **Manipulate Forms** - Add hidden fields to parent forms
+6. **Modify Cookies** - Access parent document cookies
+7. **Access Storage** - Manipulate parent localStorage
+8. **Override Handlers** - Replace parent event handlers
+9. **Change Metadata** - Modify parent document title
+
+## Expected Results
+
+In a properly secured cross-origin iframe:
+
+- All DOM manipulation attempts should be **blocked**
+- Console should show `❌ blocked` for each attempt
+- No visible changes should appear in the parent document
+
+## Security Implications
+
+These tests verify protection against:
+
+- **Cross-site scripting (XSS)** via iframe injection
+- **Clickjacking** through DOM manipulation
+- **Form hijacking** and data theft
+- **Cookie theft** and session hijacking
+- **Visual spoofing** attacks
+
+<Callout type="warning">
+  **Critical Security Risk**: If any DOM manipulation tests succeed in a
+  cross-origin scenario, this indicates a severe security vulnerability that
+  could enable: - Data theft from parent page - User credential harvesting -
+  Session hijacking - Visual spoofing attacks
+</Callout>
+
+## Defensive Measures
+
+To prevent these attacks, ensure:
+
+- Proper **Content Security Policy (CSP)** headers
+- **X-Frame-Options** or **frame-ancestors** directives
+- **Same-Origin Policy** enforcement
+- **Sandbox attributes** on iframe elements

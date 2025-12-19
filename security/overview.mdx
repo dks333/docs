@@ -1,0 +1,89 @@
+---
+title: "Security Testing Overview"
+description: "Comprehensive iframe hijacking and security testing suite"
+icon: "shield-check"
+---
+
+# Security Testing Overview
+
+This section contains a comprehensive suite of iframe security tests designed to evaluate potential vulnerabilities and security boundaries when MDX content is embedded in iframes.
+
+## Test Categories
+
+Our security testing is organized into the following categories:
+
+<CardGroup cols={2}>
+  <Card
+    title="Iframe Detection"
+    icon="window-maximize"
+    href="/security/iframe-detection"
+  >
+    Basic window properties and iframe detection mechanisms
+  </Card>
+  
+  <Card
+    title="Parent Access"
+    icon="hierarchy"
+    href="/security/parent-access"
+  >
+    Attempts to access parent window properties and methods
+  </Card>
+  
+  <Card
+    title="DOM Manipulation"
+    icon="code"
+    href="/security/dom-manipulation"
+  >
+    Tests for manipulating parent document elements
+  </Card>
+  
+  <Card
+    title="Navigation Hijacking"
+    icon="route"
+    href="/security/navigation-hijacking"
+  >
+    Frame busting and navigation redirection attempts
+  </Card>
+  
+  <Card
+    title="Cross-Frame Communication"
+    icon="messages"
+    href="/security/communication"
+  >
+    PostMessage and cross-frame communication testing
+  </Card>
+  
+  <Card
+    title="Storage & Cookies"
+    icon="database"
+    href="/security/storage-cookies"
+  >
+    Local storage, session storage, and cookie access tests
+  </Card>
+</CardGroup>
+
+## How to Use
+
+Each test file contains JavaScript code that will automatically run when the MDX file is loaded in an iframe. The tests will:
+
+1. **Log detailed results** to the browser console
+2. **Attempt various security bypasses** and report success/failure
+3. **Provide visual feedback** when possible
+4. **Test both read and write operations** across security boundaries
+
+## Safety Notice
+
+<Warning>
+These tests are designed for educational and security assessment purposes only. They should be used in controlled environments to understand iframe security boundaries and should not be used maliciously.
+</Warning>
+
+## Getting Started
+
+To run the security tests:
+
+1. Load any of the security test files in an iframe
+2. Open browser developer tools
+3. Check the console for detailed test results
+4. Look for messages indicating successful bypasses or blocked attempts
+
+Each test will clearly indicate whether it succeeded (✅) or was blocked (❌) by security mechanisms.

