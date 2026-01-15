@@ -22,7 +22,6 @@
             "pages": [
               "quickstart",
               "external-url",
-              "https://www.mintlify.com/docs",
               {
                 "group": "Editing",
                 "icon": "pen-paintbrush",
@@ -251,8 +250,25 @@
         "href": "https://samding.dev"
       },
       {
-        "tab": "API References",
+        "tab": "OpenAPI",
         "openapi": "v1-openapi.json"
+      },
+      {
+        "tab": "AsyncAPI",
+        "asyncapi": "asyncapi.yaml"
+      },
+      {
+        "tab": "OpenAPI Petstore",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["overview"]
+          },
+          {
+            "group": "API",
+            "openapi": "openapi-petstore.yaml"
+          }
+        ]
       }
     ],
     "global": {
