@@ -255,18 +255,18 @@
       },
       {
         "tab": "AsyncAPI",
-        "asyncapi": "asyncapi.yaml"
+        "asyncapi": "./asyncapi.yaml"
       },
       {
         "tab": "OpenAPI Petstore",
         "groups": [
           {
             "group": "Overview",
-            "pages": ["overview"]
+            "pages": ["petstore-overview"]
           },
           {
             "group": "API",
-            "openapi": "openapi-petstore.yaml"
+            "openapi": "./petstore-openapi.yaml"
           }
         ]
       }
